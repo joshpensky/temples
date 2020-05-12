@@ -1,5 +1,5 @@
-import Listr from 'listr';
-import { isEmpty } from 'lodash';
+import Listr, { ListrTask } from 'listr';
+import { isEmpty, List } from 'lodash';
 import { Select, Input } from 'enquirer';
 import clc from 'cli-color';
 
@@ -7,12 +7,8 @@ export const boldCyan = clc.cyan.bold;
 
 /**
  * Prompt for command name.
- *
- * @param {String[]} commands | list of available commands
- *
- * @returns {String} chosen command
  */
-export const promptCommand = async (commands) => {
+export const promptCommand = async (commands: string[]): Promise<string> => {
   const prompt = new Select({
     name: 'command',
     message: 'Select command to run:',
@@ -30,7 +26,10 @@ export const promptCommand = async (commands) => {
  *
  * @returns {Object} key to value mapping
  */
-export const promptMapping = async (command, keys = []) => {
+export const promptMapping = async (
+  command: string,
+  keys: string[] = []
+): Promise<object> => {
   if (isEmpty(keys)) {
     return {};
   }
@@ -52,16 +51,12 @@ export const promptMapping = async (command, keys = []) => {
 
 /**
  * Run and notify given Listr processes.
- *
- * @param {String} headline | headline for processes
- * @param {Object[]} processes | Listr task list
- * @param {Object} options | options for Listr
  */
 export const notifyProcesses = (
-  headline,
-  processes,
+  headline: string,
+  processes: ListrTask<object>[],
   options = { exitOnError: false }
 ) => {
   console.log(headline);
-  new Listr(processes, options).run().catch((err) => console.error(err));
+  new Listr(processes, options).run().catch((err: Error) => console.error(err));
 };

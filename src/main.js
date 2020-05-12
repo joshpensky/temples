@@ -5,7 +5,7 @@ import { omit, get, isEmpty } from 'lodash';
 
 import handleTemples from './temples';
 import { readFile } from './utils';
-import { Command } from './types';
+import { Command } from './runtypes';
 import { promptCommand, promptMapping } from './prompts';
 
 const TEMPLES_YAML = '.temples.yaml';
