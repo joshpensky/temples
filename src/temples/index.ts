@@ -4,17 +4,17 @@ import { boldCyan, notifyProcesses } from '../prompts';
 import { readFile, writeFile, resolvePaths } from '../utils';
 import parse from '../parser';
 
+import { Temple, Context, Mapping } from '../runtypes';
+
 /**
  * Process temple given mapping from CLI command.
- *
- * @param {Temple} temple | temple command
- * @param {Object} mapping | key to value mapping
  */
-const handle = ({ template, output, default: defaultMapping }, mapping) => {
+const handle = (temple: Temple, mapping: Mapping) => {
+  const { template, output, default: defaultMapping } = temple;
   const [parsedTemplatePath, parsedOutputPath] = [
     template,
     output,
-  ].map((path) => parse(path, mapping, defaultMapping));
+  ].map((path: string): string => parse(path, mapping, defaultMapping));
 
   const templateFile = readFile(parsedTemplatePath);
   const parsedTemplate = parse(templateFile, mapping, defaultMapping);
@@ -24,13 +24,8 @@ const handle = ({ template, output, default: defaultMapping }, mapping) => {
 
 /**
  * Contextualizes temple with given context.
- *
- * @param {Temple} temple | temple to modify
- * @param {Context} context | command context
- *
- * @returns {Temple} contextualized temple
  */
-export const contextualize = (temple, context) => {
+export const contextualize = (temple: Temple, context: Context): Temple => {
   const templePaths = ['output', 'template'];
 
   try {
@@ -48,12 +43,8 @@ export const contextualize = (temple, context) => {
 /**
  * Process all temples given CLI command configuration
  * and mapping.
- *
- * @param {Temple[]} temples | temples
- * @param {Context} context | command context
- * @param {Object} mapping | key to value mapping
  */
-const temples = (temples, context, mapping) => {
+const temples = (temples: Temple[], context: Context, mapping: Mapping) => {
   notifyProcesses(
     `\nProcessing temples for: ${boldCyan(context.cmd)}`,
     temples.map((temple) => {
